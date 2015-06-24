@@ -1,5 +1,5 @@
 " Date Create: 2015-06-09 04:55:31
-" Last Change: 2015-06-09 05:43:26
+" Last Change: 2015-06-24 21:16:08
 " Author: Artur Sh. Mamedbekov (Artur-Mamedbekov@yandex.ru)
 " License: GNU GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
@@ -20,7 +20,8 @@ endfunction " }}}
 "" }}}
 function! vim_notepad#lastNote() " {{{
   let l:dir = g:vim_notepad#.notesDir
-  let l:noteBuffer = s:Buffer.new(l:dir.getChild(len(l:dir.getChildren()) . '.txt').getAddress())
+  let l:name = len(l:dir.getChildren())
+  let l:noteBuffer = s:Buffer.new(l:dir.getChild((l:name == 0? 1 : l:name) . '.txt').getAddress())
   call l:noteBuffer.gactive('t')
 endfunction " }}}
 
