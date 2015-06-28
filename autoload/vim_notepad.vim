@@ -1,44 +1,115 @@
 " Date Create: 2015-06-09 04:55:31
-" Last Change: 2015-06-24 21:16:08
+" Last Change: 2015-06-28 17:24:46
 " Author: Artur Sh. Mamedbekov (Artur-Mamedbekov@yandex.ru)
 " License: GNU GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
 let s:Buffer = vim_lib#sys#Buffer#
 let s:System = vim_lib#sys#System#.new()
+let s:File = vim_lib#base#File#
 
 "" {{{
-" Метод создает новую заметку.
+" Метод открывает заметку с данным именем в новом буфере. Если файла заметки не существует, он создается.
+" @param string name Имя заметки.
 "" }}}
-function! vim_notepad#createNote() " {{{
-  let l:dir = g:vim_notepad#.notesDir
-  let l:noteBuffer = s:Buffer.new(l:dir.getChild(len(l:dir.getChildren()) + 1 . '.txt').getAddress())
-  call l:noteBuffer.gactive('t')
+function! vim_notepad#openNote(name) " {{{
+  let l:noteFile = g:vim_notepad#.notesDir.getChild(a:name)
+
+  if !l:noteFile.isExists() || !l:noteFile.isFile()
+    call l:noteFile.createFile()
+  endif
+
+  let l:noteBuffer = s:Buffer.new(l:noteFile.getAddress())
+  call l:noteBuffer.gactive('T')
+
+  let g:vim_notepad#.lastNote = a:name
+endfunction " }}}
+
+"" {{{
+" Метод удаляет указанную заметку.
+" @param string name Имя удаляемой заметки.
+"" }}}
+function! vim_notepad#deleteNote(name) " {{{
+  let l:noteFile = g:vim_notepad#.notesDir.getChild(a:name)
+
+  if l:noteFile.isExists() && l:noteFile.isFile()
+    call l:noteFile.deleteFile()
+  endif
+endfunction " }}}
+
+"" {{{
+" Метод переименовывает указанную заметку.
+" @param string name Имя переименовываемой заметки.
+" @param string newName Новое имя.
+"" }}}
+function! vim_notepad#renameNote(name, newName) " {{{
+  let l:noteFile = g:vim_notepad#.notesDir.getChild(a:name)
+  
+  if l:noteFile.isExists() && l:noteFile.isFile()
+    call s:System.silentExe('mv ' . l:noteFile.getAddress() . ' ' . l:noteFile.getDir().getAddress() . s:File.slash . a:newName)
+  endif
 endfunction " }}}
 
 "" {{{
 " Метод открывает последнюю заметку.
 "" }}}
 function! vim_notepad#lastNote() " {{{
-  let l:dir = g:vim_notepad#.notesDir
-  let l:name = len(l:dir.getChildren())
-  let l:noteBuffer = s:Buffer.new(l:dir.getChild((l:name == 0? 1 : l:name) . '.txt').getAddress())
-  call l:noteBuffer.gactive('t')
+  call vim_notepad#openNote(g:vim_notepad#.lastNote)
 endfunction " }}}
 
-function! vim_notepad#createDia() " {{{
-  let l:dir = g:vim_notepad#.diaDir
-  let l:newDiaFile = l:dir.getChild(len(l:dir.getChildren()) + 1 . '.dia')
-  call s:System.run('cp ' . g:vim_notepad#.templateDia . ' ' . l:newDiaFile.getAddress())
-  call s:System.silentExe('dia ' . l:newDiaFile.getAddress())
+"" {{{
+" Метод открывает диаграмму с данным именем в новом буфере. Если файла диаграммы не существует, он создается.
+" @param string name Имя диаграммы.
+"" }}}
+function! vim_notepad#openDia(name) " {{{
+  let l:diaFile = g:vim_notepad#.diaDir.getChild(a:name)
+
+  if !l:diaFile.isExists() || !l:diaFile.isFile()
+    call s:System.run('cp ' . g:vim_notepad#.templateDia . ' ' . l:diaFile.getAddress())
+  endif
+
+  call s:System.silentExe('dia ' . l:diaFile.getAddress())
+
+  let g:vim_notepad#.lastDia = a:name
 endfunction " }}}
 
+"" {{{
+" Метод удаляет указанную диаграмму.
+" @param string name Имя удаляемой диаграммы.
+"" }}}
+function! vim_notepad#deleteDia(name) " {{{
+  let l:diaFile = g:vim_notepad#.diaDir.getChild(a:name)
+
+  if l:diaFile.isExists() && l:diaFile.isFile()
+    call l:diaFile.deleteFile()
+  endif
+endfunction " }}}
+
+"" {{{
+" Метод переименовывает указанную диаграмму.
+" @param string name Имя переименовываемой диаграммы.
+" @param string newName Новое имя.
+"" }}}
+function! vim_notepad#renameDia(name, newName) " {{{
+  let l:diaFile = g:vim_notepad#.diaDir.getChild(a:name)
+  
+  if l:diaFile.isExists() && l:diaFile.isFile()
+    call s:System.silentExe('mv ' . l:diaFile.getAddress() . ' ' . l:diaFile.getDir().getAddress() . s:File.slash . a:newName)
+  endif
+endfunction " }}}
+
+"" {{{
+" Метод открывает последнюю диаграмму.
+"" }}}
 function! vim_notepad#lastDia() " {{{
-  let l:dir = g:vim_notepad#.diaDir
-  let l:currentNum = len(l:dir.getChildren())
-  if l:currentNum == 0
-    call vim_notepad#createDia()
+  call vim_notepad#openDia(g:vim_notepad#.lastDia)
+endfunction " }}}
+
+function! vim_notepad#notesList() " {{{
+  let l:screen = g:vim_notepad#NotesList#
+  if l:screen.getWinNum() != -1
+    " Закрыть окно, если оно уже открыто.
+    call l:screen.unload()
   else
-    let l:diaFile = l:dir.getChild(l:currentNum . '.dia')
-    call s:System.silentExe('dia ' . l:diaFile.getAddress())
+    call l:screen.vactive('R', 40)
   endif
 endfunction " }}}
