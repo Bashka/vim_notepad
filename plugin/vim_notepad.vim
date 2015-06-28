@@ -1,5 +1,5 @@
 " Date Create: 2015-06-09 04:50:57
-" Last Change: 2015-06-28 16:54:17
+" Last Change: 2015-06-28 17:56:03
 " Author: Artur Sh. Mamedbekov (Artur-Mamedbekov@yandex.ru)
 " License: GNU GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
@@ -38,6 +38,11 @@ function! s:p.run() " {{{
   if !self.notesDir.isExists() || !self.notesDir.isDir()
     call self.notesDir.createDir()
   endif
+  " Первый файл заметки в качестве последней открытой заметки.
+  let l:notesNames = self.notesDir.getChildren()
+  if len(l:notesNames) != 0
+    let self.lastNote = l:notesNames[0]
+  endif
 
   "" {{{
   " @var string Директория, хранящая диаграммы.
@@ -45,6 +50,11 @@ function! s:p.run() " {{{
   let self.diaDir = self.notepadDir.getChild('dia')
   if !self.diaDir.isExists() || !self.diaDir.isDir()
     call self.diaDir.createDir()
+  endif
+  " Первый файл диаграммы в качестве последней открытой диаграммы.
+  let l:diaNames = self.diaDir.getChildren()
+  if len(l:diaNames) != 0
+    let self.lastDia = l:diaNames[0]
   endif
 endfunction " }}}
 
