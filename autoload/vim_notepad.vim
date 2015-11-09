@@ -1,5 +1,5 @@
 " Date Create: 2015-06-09 04:55:31
-" Last Change: 2015-11-09 12:56:20
+" Last Change: 2015-11-09 13:03:20
 " Author: Artur Sh. Mamedbekov (Artur-Mamedbekov@yandex.ru)
 " License: GNU GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
@@ -19,7 +19,12 @@ function! vim_notepad#openNote(name) " {{{
   endif
 
   let l:noteBuffer = s:Buffer.new(l:noteFile.getAddress())
-  call l:noteBuffer.gactive(g:vim_notepad#.noteWindowOption)
+  echom g:vim_notepad#.noteWindowOption
+  if index(['t', 'b', 'T', 'B'], g:vim_notepad#.noteWindowOption) != -1
+    call l:noteBuffer.gactive(g:vim_notepad#.noteWindowOption)
+  else
+    call l:noteBuffer.vactive(g:vim_notepad#.noteWindowOption)
+  endif
 
   let g:vim_notepad#.lastNote = a:name
 endfunction " }}}
