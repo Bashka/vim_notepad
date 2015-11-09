@@ -1,5 +1,5 @@
 " Date Create: 2015-06-09 04:55:31
-" Last Change: 2015-06-28 17:54:15
+" Last Change: 2015-11-09 12:56:20
 " Author: Artur Sh. Mamedbekov (Artur-Mamedbekov@yandex.ru)
 " License: GNU GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
@@ -19,7 +19,7 @@ function! vim_notepad#openNote(name) " {{{
   endif
 
   let l:noteBuffer = s:Buffer.new(l:noteFile.getAddress())
-  call l:noteBuffer.gactive('T')
+  call l:noteBuffer.gactive(g:vim_notepad#.noteWindowOption)
 
   let g:vim_notepad#.lastNote = a:name
 endfunction " }}}
@@ -104,6 +104,9 @@ function! vim_notepad#lastDia() " {{{
   call vim_notepad#openDia(g:vim_notepad#.lastDia)
 endfunction " }}}
 
+"" {{{
+" Метод открывает список созданных заметок.
+"" }}}
 function! vim_notepad#notesList() " {{{
   let l:screen = g:vim_notepad#NotesList#
   if l:screen.getWinNum() != -1

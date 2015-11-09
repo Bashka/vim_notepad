@@ -1,5 +1,5 @@
 " Date Create: 2015-06-09 04:50:57
-" Last Change: 2015-06-28 17:56:03
+" Last Change: 2015-11-09 12:57:43
 " Author: Artur Sh. Mamedbekov (Artur-Mamedbekov@yandex.ru)
 " License: GNU GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
@@ -21,6 +21,11 @@ let s:p.lastNote = 'tmp.txt'
   " @var string Имя последней открытой диаграммы.
   "" }}}
 let s:p.lastDia = 'tmp.dia'
+  "" {{{
+  " @var string Параметры показа окна заметки.
+  " Возможные значения: t - выше текущего окна, b - ниже текущего окна, T - выше всех окон, B - ниже всех окон
+  "" }}}
+let s:p.noteWindowOption = 'T'
 
 function! s:p.run() " {{{
   "" {{{
