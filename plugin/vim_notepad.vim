@@ -1,5 +1,5 @@
 " Date Create: 2015-06-09 04:50:57
-" Last Change: 2015-11-09 13:01:02
+" Last Change: 2015-12-20 21:42:56
 " Author: Artur Sh. Mamedbekov (Artur-Mamedbekov@yandex.ru)
 " License: GNU GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
@@ -31,7 +31,7 @@ function! s:p.run() " {{{
   "" {{{
   " @var string Директория, хранящая каталоги плагина.
   "" }}}
-  let self.notepadDir = s:File.absolute(g:vim_lib#sys#Autoload#currentLevel . s:File.slash . 'notepad')
+  let self.notepadDir = s:File.absolute(vim_lib#sys#Autoload#getRootPath() . 'notepad')
   if !self.notepadDir.isExists() || !self.notepadDir.isDir()
     call self.notepadDir.createDir()
   endif

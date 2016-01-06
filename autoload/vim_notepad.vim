@@ -1,5 +1,5 @@
 " Date Create: 2015-06-09 04:55:31
-" Last Change: 2015-11-09 13:03:20
+" Last Change: 2016-01-06 11:33:04
 " Author: Artur Sh. Mamedbekov (Artur-Mamedbekov@yandex.ru)
 " License: GNU GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
@@ -73,6 +73,24 @@ function! vim_notepad#openDia(name) " {{{
   endif
 
   call s:System.silentExe('dia ' . l:diaFile.getAddress())
+
+  let g:vim_notepad#.lastDia = a:name
+endfunction " }}}
+
+"" {{{
+" Метод открывает диаграмму с данным именем в новом окне. Если файла диаграммы не существует, он создается.
+" @param string name Имя диаграммы.
+"" }}}
+function! vim_notepad#tabDia(name) " {{{
+  let l:diaFile = g:vim_notepad#.diaDir.getChild(a:name)
+
+  if !l:diaFile.isExists() || !l:diaFile.isFile()
+    call s:System.run('cp ' . g:vim_notepad#.templateDia . ' ' . l:diaFile.getAddress())
+  endif
+
+  call s:System.silentExe('dia ' . l:diaFile.getAddress() . '&')
+  call s:Buffer.current().active()
+  redraw!
 
   let g:vim_notepad#.lastDia = a:name
 endfunction " }}}

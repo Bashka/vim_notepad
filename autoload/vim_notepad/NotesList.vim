@@ -1,5 +1,5 @@
 " Date Create: 2015-06-28 16:30:54
-" Last Change: 2015-06-28 17:34:12
+" Last Change: 2016-01-06 11:31:59
 " Author: Artur Sh. Mamedbekov (Artur-Mamedbekov@yandex.ru)
 " License: GNU GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
@@ -29,6 +29,8 @@ function! s:screen.render() " {{{
 endfunction " }}}
 
 call s:screen.map('n', '<Enter>', 'select')
+call s:screen.map('n', 'o', 'select')
+call s:screen.map('n', 't', 'tab')
 call s:screen.map('n', 'a', 'new')
 call s:screen.map('n', 'r', 'rename')
 call s:screen.map('n', 'dd', 'delete')
@@ -55,6 +57,19 @@ function! s:screen.select() " {{{
   endif
   if l:type == 'dia'
     call vim_notepad#openDia(expand('<cfile>'))
+  endif
+endfunction " }}}
+"" {{{
+" Метод выбирает текущую заметку, открывая ее в новом окне.
+"" }}}
+function! s:screen.tab() " {{{
+  let l:type = self.getType(line('.'))
+
+  if l:type == 'note'
+    call s:System.echom('You can not open this a new window', 'Error')
+  endif
+  if l:type == 'dia'
+    call vim_notepad#tabDia(expand('<cfile>'))
   endif
 endfunction " }}}
 "" {{{
@@ -120,6 +135,8 @@ call s:screen.map('n', '?', 'showHelp')
 " Подсказки. {{{
 let s:screen.help = ['" Manual "',
                    \ '',
+                   \ '" Enter/o - open note',
+                   \ '" t - open note in new window',
                    \ '" a - create new note/dia',
                    \ '" r - rename note/dia',
                    \ '" dd - delete note/dia',
